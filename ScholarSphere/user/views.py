@@ -1,4 +1,4 @@
-# publish/views.py
+
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from user.models import User
