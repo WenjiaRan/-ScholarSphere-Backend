@@ -108,8 +108,8 @@
 
 ```json
 {
-    'result': 1, 
-    'message': "登录成功!"
+    "result": 1,
+    "message": "登录成功!"
 }
 ```
 
@@ -175,8 +175,8 @@
 
 ```json
 {
-    'result': 1, 
-    'message': "设置成功!"
+    "result": 1,
+    "message": "设置成功!"
 }
 ```
 
