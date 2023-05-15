@@ -188,3 +188,96 @@
     "message": "请求方式错误！"
 }
 ```
+
+# 5.高级搜索
+
+### 接口说明
+
+- 该接口用于高级搜索功能，根据给定的搜索条件进行搜索。
+- 只接受POST请求。
+
+### 请求URL
+
+- `/api/scholarsphere/search/advancesearch`
+
+### 请求方法
+
+- POST
+
+### 请求参数
+
+| 参数名                    | 必选 | 类型 | 说明                                                         |
+| :------------------------ | :--- | :--- | :----------------------------------------------------------- |
+| searchDatefrom            | 否   | int  | 搜索起始时间戳                                               |
+| searchDateto              | 否   | int  | 搜索结束时间戳                                               |
+| searchType                | 否   | str  | 搜索类型，可选值为：`author`、`work_name`、`category`、`content` |
+| searchContent             | 否   | str  | 搜索内容                                                     |
+| additionalSearchCondition | 否   | list | 额外的搜索条件，格式见下表                                   |
+
+`additionalSearchCondition` 参数格式说明：
+
+| 参数名        | 必选 | 类型 | 说明                                                         |
+| :------------ | :--- | :--- | :----------------------------------------------------------- |
+| bool          | 是   | str  | 操作符，可选值为：`AND`、`OR`、`NOT`                         |
+| searchType    | 是   | str  | 搜索类型，可选值为：`author`、`work_name`、`category`、`content` |
+| searchContent | 是   | str  | 搜索内容                                                     |
+
+### 响应参数
+
+| 参数名  | 类型 | 说明                                                         |
+| :------ | :--- | :----------------------------------------------------------- |
+| results | list | 查询结果列表，每个元素都是一个字典，包含以下键值：`id`、`work_name`、`author_id`、`url`、`has_pdf`、`content`、`send_time`、`author`、`category` |
+
+### 响应示例
+
+请求：
+
+http
+
+
+
+```
+POST /api/scholarsphere/search/advancesearch HTTP/1.1
+Content-Type: application/json
+
+{
+    "searchDatefrom": 1630108800,
+    "searchDateto": 1630112400,
+    "searchType": "content",
+    "searchContent": "machine learning",
+    "additionalSearchCondition": [
+        {
+            "bool": "AND",
+            "searchType": "author",
+            "searchContent": "Li"
+        }
+    ]
+}
+```
+
+响应：
+
+http
+
+
+
+```
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+    "results": [
+        {
+            "id": "123",
+            "work_name": "Machine Learning",
+            "author_id": "456",
+            "url": "http://example.com",
+            "has_pdf": 1,
+            "content": "This paper is about machine learning.",
+            "send_time": "2021-08-28 12:00:00",
+            "author": "Tom Li",
+            "category": "Computer Science"
+        }
+    ]
+}
+```
