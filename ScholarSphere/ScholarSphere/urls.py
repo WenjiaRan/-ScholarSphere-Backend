@@ -19,5 +19,7 @@ from django.urls import path, include
 
 urlpatterns = [
     path('api/admin/', admin.site.urls),
-    path('api/scholarsphere/', include(('user.urls','user')))
+    path('api/scholarsphere/', include(('user.urls','user'))),
+    path('api/scholarsphere/', include(('search.urls','search'))),
+    path('api/scholarsphere/', include(('article.urls','article')))
 ]
