@@ -199,4 +199,5 @@ def autologin(request):
         result = {'result': 0, 'message': r"请求方式错误！"}
         return JsonResponse(result)
 
-
+def get_by_name(user_name):
+    return User.objects.filter(real_info__name=user_name,is_scholar=True)

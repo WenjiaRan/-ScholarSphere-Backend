@@ -1,9 +1,11 @@
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.core import serializers
 from article.models import Work
 import datetime
 from django.db.models import Q
-
+from user.views import get_by_name
+from article.views import article_get_by_name,article_get_by_id,article_get_by_author
 @csrf_exempt
 def advancesearch(request):
     if request.method == 'POST':
@@ -53,3 +55,34 @@ def advancesearch(request):
             ]
         }
         return JsonResponse(response_data)
+
+
+@csrf_exempt
+def normal_search(request):
+    if request.method == 'POST':
+        search_method=request.get('search_method')
+        search_key=request.get('search_key')
+        if search_method is 'scholar':
+            results=get_by_name(search_key)
+            if results is None:
+                result = {'result': 0, 'message': r"未查询到此人！"}
+                return JsonResponse(result)
+            serialized_data = serializers.serialize("json", results, fields=('id', 'url', 'description'))
+
+        else:
+            search_type=request.get('search_type')
+            if search_type is 'name':
+                results=article_get_by_name(search_key)
+            else:
+                results=article_get_by_id(search_key)
+            if results is None:
+                result = {'result': 0, 'message': r"未查询到相关文章！"}
+                return JsonResponse(result)
+            serialized_data = serializers.serialize("json", results, fields=('id', 'url','work_name'))
+        data = {
+            "items": serialized_data
+        }
+        return JsonResponse(data)
+    else:
+        result = {'result': 0, 'message': r"请求方式错误！"}
+        return JsonResponse(result)
