@@ -1,5 +1,5 @@
 ScholarSphere/venv/
-.idea/
-ScholarSphere/.idea/
+**/.idea/
 **/__pycache__/
 ScholarSphere/db.sqlite3
+.github
