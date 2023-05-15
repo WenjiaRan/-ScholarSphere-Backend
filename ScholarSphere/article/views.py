@@ -1,12 +1,11 @@
 from django.shortcuts import render
-
+from article.models import Work
 # Create your views here.
-from django.shortcuts import render
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-import datetime
+def article_get_by_name(article_name):
+    return Work.objects.filter(work_name=article_name)
 
-@csrf_exempt    # 跨域设置
-def tests(request):
-    result = {'result': 1, 'message': r"hello world！"}
-    return JsonResponse(result)
+def article_get_by_id(article_id):
+    return Work.objects.filter(id=article_id)
+
+def article_get_by_author(in_author_id):
+    return Work.objects.filter(author_id=in_author_id)
