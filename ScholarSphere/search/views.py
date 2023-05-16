@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.core import serializers
@@ -6,6 +7,19 @@ import datetime
 from django.db.models import Q
 from user.views import get_by_name
 from article.views import article_get_by_name,article_get_by_id,article_get_by_author
+=======
+import datetime
+
+from django.db.models import Q
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+
+from article.models import Work
+from article.views import article_get_by_name, article_get_by_id, article_get_by_author
+from user.views import user_get_by_name
+
+
+>>>>>>> check_branch
 @csrf_exempt
 def advancesearch(request):
     if request.method == 'POST':
@@ -60,6 +74,7 @@ def advancesearch(request):
 @csrf_exempt
 def normal_search(request):
     if request.method == 'POST':
+<<<<<<< HEAD
         search_method=request.get('search_method')
         search_key=request.get('search_key')
         if search_method is 'scholar':
@@ -83,6 +98,56 @@ def normal_search(request):
             "items": serialized_data
         }
         return JsonResponse(data)
+=======
+        search_method=request.POST.get('search_method')
+        search_key=request.POST.get('search_key')
+        if search_method == 'scholar':
+            results=user_get_by_name(search_key)
+            if results is None:
+                result = {'result': 0, 'message': r"未查询到此人！"}
+                return JsonResponse(result)
+            response_data = {
+                'results': [
+                    {
+                        'id': result.id,
+                        'name':result.real_info.name,
+                        'email':result.email,
+                        'url':result.url
+                    } for result in results
+                ]
+            }
+
+        else:
+            search_type=request.POST.get('search_type')
+            if search_type == 'article_name':
+                results=article_get_by_name(search_key)
+            elif search_type == 'article_id':
+                results=article_get_by_id(search_key)
+            elif search_type == 'author_name':
+                results=article_get_by_author(search_key)
+            else:
+                result = {'result': 0, 'message': r"超出搜索范围！"}
+                return JsonResponse(result)
+            if results is None:
+                result = {'result': 0, 'message': r"未查询到相关文章！"}
+                return JsonResponse(result)
+            response_data = {
+                'results': [
+                    {
+                        'id': result.id,
+                        'work_name': result.work_name,
+                        'author_id': result.author_id,
+                        'url': result.url,
+                        'has_pdf': result.has_pdf,
+                        'content': result.content,
+                        'send_time': result.send_time.strftime('%Y-%m-%d %H:%M:%S'),
+                        'author': result.author,
+                        'category': result.category
+                    } for result in results
+                ]
+            }
+        return JsonResponse(response_data)
+>>>>>>> check_branch
     else:
         result = {'result': 0, 'message': r"请求方式错误！"}
         return JsonResponse(result)

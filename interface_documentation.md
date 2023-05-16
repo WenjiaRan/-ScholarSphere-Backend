@@ -250,11 +250,14 @@ Content-Type: application/json
             "bool": "AND",
             "searchType": "author",
             "searchContent": "Li"
+<<<<<<< HEAD
         },
         {
             "bool": "AND",
             "searchType": "author",
             "searchContent": "Li"
+=======
+>>>>>>> check_branch
         }
     ]
 }

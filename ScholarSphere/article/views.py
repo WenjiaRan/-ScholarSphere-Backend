@@ -7,5 +7,10 @@ def article_get_by_name(article_name):
 def article_get_by_id(article_id):
     return Work.objects.filter(id=article_id)
 
+<<<<<<< HEAD
 def article_get_by_author(in_author_id):
     return Work.objects.filter(author_id=in_author_id)
+=======
+def article_get_by_author(in_author):
+    return Work.objects.filter(author__icontains=in_author)
+>>>>>>> check_branch

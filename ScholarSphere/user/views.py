@@ -1,10 +1,18 @@
 # publish/views.py
 import datetime
+<<<<<<< HEAD
 
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
 from user.models import User
+=======
+import re
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+
+from user.models import *
+>>>>>>> check_branch
 
 
 def check_number(password):
@@ -23,6 +31,8 @@ def check_mark(password):
     for c in password:
         if not (c.isnumeric() or 'a' <= c <= 'z' or 'A' <= c <= 'Z'):
             return True
+
+
 def check_legal(password):
     if len(password) < 8 or len(password) > 16:
         return {'result': 0, 'message': '长度需为8-16个字符,请重新输入。'}
@@ -40,23 +50,30 @@ def check_legal(password):
             else:
                 return {'result': 0, 'message': '至少含数字/字母/字符2种组合，请重新输入。'}
 
-def check_password(email,password):
+
+def check_password(email, password):
     if User.objects.filter(email=email, password=password).exists():
         return True
     return False
 
+
 def check_password_wrong_45times(email):
     user = User.objects.filter(email=email).first()
+<<<<<<< HEAD
     if user.times_of_wa_password==5:
         user.times_of_wa_password=0
+=======
+    if user.times_of_wa_password == 5:
+        user.times_of_wa_password = 0
+>>>>>>> check_branch
         user.save()
         return True
-    user.times_of_wa_password=user.times_of_wa_password+1
+    user.times_of_wa_password = user.times_of_wa_password + 1
     user.save()
     return False
 
 
-@csrf_exempt    # 跨域设置
+@csrf_exempt  # 跨域设置
 def register(request):
     """
     :param request: 请求体
@@ -90,6 +107,7 @@ def register(request):
         result = {'result': 0, 'message': r"请求方式错误！"}
         return JsonResponse(result)
 
+
 @csrf_exempt
 def checkmailregistered(request):
     if request.method == 'POST':
@@ -103,34 +121,41 @@ def checkmailregistered(request):
         result = {'result': 0, 'message': r"请求方式错误！"}
         return JsonResponse(result)
 
+
 def check_accessible(user):
     date = user.forbiden_start_time
     if date is None:
         return True
     now = get_standard_time(datetime.datetime.now())
-    if date.day<now.day:
-        user.forbiden_start_time=None
+    if date.day < now.day:
+        user.forbiden_start_time = None
         user.save()
         return True
     return False
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> check_branch
 def get_standard_time(time):
-    time_str=time.strftime("%Y-%m-%d %H:%M:%S")
-    new_time=datetime.datetime.strptime(time_str,"%Y-%m-%d %H:%M:%S")
+    time_str = time.strftime("%Y-%m-%d %H:%M:%S")
+    new_time = datetime.datetime.strptime(time_str, "%Y-%m-%d %H:%M:%S")
     return new_time
 
+
 def check_autologin(user):
-    date=user.sevendays_autologin_start_time
+    date = user.sevendays_autologin_start_time
     if date is None:
         return False
-    now=get_standard_time(datetime.datetime.now())
-    if (now-date).days >= 7:
-        user.sevendays_autologin_start_time=None
+    now = get_standard_time(datetime.datetime.now())
+    if (now - date).days >= 7:
+        user.sevendays_autologin_start_time = None
         user.save()
         return False
     return True
 
-@csrf_exempt    # 跨域设置
+
+@csrf_exempt  # 跨域设置
 def login(request):
     """
     :param request: 请求体
@@ -155,10 +180,14 @@ def login(request):
 
         if check_accessible(user.first()):
             password = request.POST.get('password', '')
+<<<<<<< HEAD
             if len(password)==0:
+=======
+            if len(password) == 0:
+>>>>>>> check_branch
                 result = {'result': 0, 'message': r'密码不能为空!'}
                 return JsonResponse(result)
-            if not check_password(email,password):
+            if not check_password(email, password):
                 if check_password_wrong_45times(email):
                     user.update(forbiden_start_time=get_standard_time(datetime.datetime.now()))
                     user.first().save()
@@ -178,7 +207,8 @@ def login(request):
         result = {'result': 0, 'message': r"请求方式错误！"}
         return JsonResponse(result)
 
-@csrf_exempt    # 跨域设置
+
+@csrf_exempt  # 跨域设置
 def autologin(request):
     """
     :param request: 请求体
@@ -199,5 +229,73 @@ def autologin(request):
         result = {'result': 0, 'message': r"请求方式错误！"}
         return JsonResponse(result)
 
+<<<<<<< HEAD
 def get_by_name(user_name):
     return User.objects.filter(real_info__name=user_name,is_scholar=True)
+=======
+
+def user_get_by_name(user_name):
+    return User.objects.filter(real_info__name=user_name, has_real_info=True)
+@csrf_exempt
+def real_info_set(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        user = User.objects.filter(email=email)
+        if user.exists():
+            user=user.first()
+        else:
+            result = {'result': 0, 'message': r"用户不存在"}
+            return JsonResponse(result)
+        name=request.POST.get('name')
+        phone=request.POST.get('phone')
+        id_num=request.POST.get('id_num')
+        if RealInformation.objects.filter(id_num=id_num).exists():
+            result = {'result': 0, 'message': r"此信息已被实名！"}
+            return JsonResponse(result)
+        real_create=RealInformation(name=name,phone=phone,id_num=id_num)
+        real_create.save()
+        user.real_info=real_create
+        user.has_real_info=True
+        user.save()
+        result = {'result': 1, 'message': r"实名成功！"}
+        return JsonResponse(result)
+    else:
+        result = {'result': 0, 'message': r"请求方式错误！"}
+        return JsonResponse(result)
+
+@csrf_exempt  # 跨域设置
+def change_info(request):
+    if request.method == 'POST':
+        key_list = request.POST.get('keys')
+        val_list = request.POST.get('vals')
+        used_password = request.POST.get('used_password')
+        email = request.POST.get('email')
+        key_list = re.findall(r'"(.*?)"', key_list)
+        val_list = re.findall(r'"(.*?)"', val_list)
+        if used_password is not None:
+            user=User.objects.filter(email=email, password=used_password)
+            if not user.exists():
+                result = {'result': 0, 'message': r"邮箱密码不匹配"}
+                return JsonResponse(result)
+        else:
+            user=User.objects.filter(email=email)
+            if not user.exists():
+                result = {'result': 0, 'message': r"用户不存在"}
+                return JsonResponse(result)
+
+        if key_list is None or val_list is None:
+            result = {'result': 0, 'message': r"未收到修改内容！"}
+            return JsonResponse(result)
+
+        kv_dict = dict(zip(key_list, val_list))
+        user_result=user.first()
+        for key, value in kv_dict.items():
+            setattr(user_result, key, value)
+        user_result.save()
+        result = {'result': 1, 'message': r"修改成功"}
+        return JsonResponse(result)
+
+    else:
+        result = {'result': 0, 'message': r"请求方式错误！"}
+        return JsonResponse(result)
+>>>>>>> check_branch

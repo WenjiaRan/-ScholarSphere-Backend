@@ -22,4 +22,8 @@ urlpatterns = [
     path('api/scholarsphere/', include(('user.urls','user'), namespace='user')),
     path('api/scholarsphere/', include(('search.urls','search'), namespace='search')),
     path('api/scholarsphere/', include(('article.urls','article'), namespace='article'))
+<<<<<<< HEAD
 ]
+=======
+]
+>>>>>>> check_branch
