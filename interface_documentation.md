@@ -250,6 +250,11 @@ Content-Type: application/json
             "bool": "AND",
             "searchType": "author",
             "searchContent": "Li"
+        },
+        {
+            "bool": "AND",
+            "searchType": "author",
+            "searchContent": "Li"
         }
     ]
 }
