@@ -1,10 +1,10 @@
 # publish/views.py
 import datetime
-
+import re
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
-from user.models import User
+from user.models import *
 
 
 def check_number(password):
@@ -211,7 +211,33 @@ def autologin(request):
 
 
 def user_get_by_name(user_name):
-    return User.objects.filter(real_info__name=user_name, is_scholar=True)
+    return User.objects.filter(real_info__name=user_name, has_real_info=True)
+@csrf_exempt
+def real_info_set(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        user = User.objects.filter(email=email)
+        if user.exists():
+            user=user.first()
+        else:
+            result = {'result': 0, 'message': r"用户不存在"}
+            return JsonResponse(result)
+        name=request.POST.get('name')
+        phone=request.POST.get('phone')
+        id_num=request.POST.get('id_num')
+        if RealInformation.objects.filter(id_num=id_num).exists():
+            result = {'result': 0, 'message': r"此信息已被实名！"}
+            return JsonResponse(result)
+        real_create=RealInformation(name=name,phone=phone,id_num=id_num)
+        real_create.save()
+        user.real_info=real_create
+        user.has_real_info=True
+        user.save()
+        result = {'result': 1, 'message': r"实名成功！"}
+        return JsonResponse(result)
+    else:
+        result = {'result': 0, 'message': r"请求方式错误！"}
+        return JsonResponse(result)
 
 @csrf_exempt  # 跨域设置
 def change_info(request):
@@ -220,6 +246,8 @@ def change_info(request):
         val_list = request.POST.get('vals')
         used_password = request.POST.get('used_password')
         email = request.POST.get('email')
+        key_list = re.findall(r'"(.*?)"', key_list)
+        val_list = re.findall(r'"(.*?)"', val_list)
         if used_password is not None:
             user=User.objects.filter(email=email, password=used_password)
             if not user.exists():
@@ -237,7 +265,9 @@ def change_info(request):
 
         kv_dict = dict(zip(key_list, val_list))
         user_result=user.first()
-        user_result.update(**kv_dict)
+        for key, value in kv_dict.items():
+            setattr(user_result, key, value)
+        user_result.save()
         result = {'result': 1, 'message': r"修改成功"}
         return JsonResponse(result)
 

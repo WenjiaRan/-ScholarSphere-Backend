@@ -1,11 +1,14 @@
+import datetime
+
+from django.db.models import Q
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.core import serializers
+
 from article.models import Work
-import datetime
-from django.db.models import Q
+from article.views import article_get_by_name, article_get_by_id, article_get_by_author
 from user.views import user_get_by_name
-from article.views import article_get_by_name,article_get_by_id,article_get_by_author
+
+
 @csrf_exempt
 def advancesearch(request):
     if request.method == 'POST':
@@ -67,7 +70,16 @@ def normal_search(request):
             if results is None:
                 result = {'result': 0, 'message': r"未查询到此人！"}
                 return JsonResponse(result)
-            serialized_data = serializers.serialize("json", results, fields=('id', 'url', 'description'))
+            response_data = {
+                'results': [
+                    {
+                        'id': result.id,
+                        'name':result.real_info.name,
+                        'email':result.email,
+                        'url':result.url
+                    } for result in results
+                ]
+            }
 
         else:
             search_type=request.POST.get('search_type')
@@ -78,15 +90,27 @@ def normal_search(request):
             elif search_type == 'author_name':
                 results=article_get_by_author(search_key)
             else:
-                results=None
+                result = {'result': 0, 'message': r"超出搜索范围！"}
+                return JsonResponse(result)
             if results is None:
                 result = {'result': 0, 'message': r"未查询到相关文章！"}
                 return JsonResponse(result)
-            serialized_data = serializers.serialize("json", results, fields=('id', 'url','work_name'))
-        data = {
-            "items": serialized_data
-        }
-        return JsonResponse(data)
+            response_data = {
+                'results': [
+                    {
+                        'id': result.id,
+                        'work_name': result.work_name,
+                        'author_id': result.author_id,
+                        'url': result.url,
+                        'has_pdf': result.has_pdf,
+                        'content': result.content,
+                        'send_time': result.send_time.strftime('%Y-%m-%d %H:%M:%S'),
+                        'author': result.author,
+                        'category': result.category
+                    } for result in results
+                ]
+            }
+        return JsonResponse(response_data)
     else:
         result = {'result': 0, 'message': r"请求方式错误！"}
         return JsonResponse(result)
