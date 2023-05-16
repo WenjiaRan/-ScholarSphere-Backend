@@ -4,7 +4,7 @@ from django.core import serializers
 from article.models import Work
 import datetime
 from django.db.models import Q
-from user.views import get_by_name
+from user.views import user_get_by_name
 from article.views import article_get_by_name,article_get_by_id,article_get_by_author
 @csrf_exempt
 def advancesearch(request):
@@ -60,21 +60,25 @@ def advancesearch(request):
 @csrf_exempt
 def normal_search(request):
     if request.method == 'POST':
-        search_method=request.get('search_method')
-        search_key=request.get('search_key')
-        if search_method is 'scholar':
-            results=get_by_name(search_key)
+        search_method=request.POST.get('search_method')
+        search_key=request.POST.get('search_key')
+        if search_method == 'scholar':
+            results=user_get_by_name(search_key)
             if results is None:
                 result = {'result': 0, 'message': r"未查询到此人！"}
                 return JsonResponse(result)
             serialized_data = serializers.serialize("json", results, fields=('id', 'url', 'description'))
 
         else:
-            search_type=request.get('search_type')
-            if search_type is 'name':
+            search_type=request.POST.get('search_type')
+            if search_type == 'article_name':
                 results=article_get_by_name(search_key)
-            else:
+            elif search_type == 'article_id':
                 results=article_get_by_id(search_key)
+            elif search_type == 'author_name':
+                results=article_get_by_author(search_key)
+            else:
+                results=None
             if results is None:
                 result = {'result': 0, 'message': r"未查询到相关文章！"}
                 return JsonResponse(result)
