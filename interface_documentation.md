@@ -250,14 +250,11 @@ Content-Type: application/json
             "bool": "AND",
             "searchType": "author",
             "searchContent": "Li"
-<<<<<<< HEAD
         },
         {
             "bool": "AND",
             "searchType": "author",
             "searchContent": "Li"
-=======
->>>>>>> check_branch
         }
     ]
 }
@@ -287,5 +284,176 @@ Content-Type: application/json
             "category": "Computer Science"
         }
     ]
+}
+```
+
+# 6.普通搜索
+
+### 接口说明
+
+- 该接口用于普通搜索功能，根据传入的搜索类型进行搜索。
+- 只接受POST请求。
+
+### 请求URL
+
+- `/api/scholarsphere/search/normalsearch`
+
+### 请求方法
+
+- POST
+
+### 请求参数
+
+| 参数名                    | 必选 | 类型 | 说明                                                         |
+| :------------------------ | :--- | :--- | :----------------------------------------------------------- |
+| search_method          | 否   | String  | 选择搜索作者还是文章。`enum=["scholar","article"]` |
+| search_key             | 否   | String  | 搜索内容。对于作者的搜索只提供名字检索，对文章的搜索提供作者名、文章编号、文章名  |
+| search_type               | 否   | String  | 搜索类型。对于`search_method ="article"`,`enum=["article_name","article_id","author_name"]` |
+
+
+### 响应参数
+
+| 参数名  | 类型 | 说明                                                         |
+| :------ | :--- | :----------------------------------------------------------- |
+| results | list | 查询结果列表，每个元素都是一个字典。当`search_method ="article"`时，包含以下键值：`id`、`work_name`、`author_id`、`url`、`has_pdf`、`content`、`send_time`、`author`、`category` ;当`search_method ="scholar`时，包含以下键值：`id`、`name`、`email`、`url`|
+
+### 响应示例
+
+请求：
+http
+
+
+
+```
+POST /api/scholarsphere/search/advancesearch HTTP/1.1
+Content-Type: application/json
+
+{
+    "search_method" : "scholar",
+    "search_key" : "qymiy"
+}
+```
+
+
+响应：
+
+http
+
+
+
+```
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+    "results": [
+        {
+            "id": "1",
+            "name": "qymiy",
+            "email": "2718106017",
+            "url": "http://example.com"
+        }
+    ]
+}
+```
+
+# 7. 实名绑定
+
+
+### 接口说明
+
+- 该接口用于为账号进行实名绑定。
+- 只接受POST请求。
+
+
+请求URL：/api/scholarsphere/user/realinfoset
+
+请求方式：POST
+
+请求参数：
+
+| 参数名    | 必选 | 类型   | 说明     |
+| --------- | ---- | ------ | -------- |
+| name     | 是   | string | 姓名|
+| phone | 是   | string | 电话 |
+| id_num | 是   | string | 身份证号|
+| email | 是   | string | 邮箱|
+返回示例：
+
+成功：
+
+```json
+{
+    "result": 1,
+    "message": "实名成功！"
+}
+```
+
+失败返回例：
+
+```json
+{
+    "result": 0,
+    "message": "此信息已被实名！"
+}
+```
+
+
+
+# 8. 修改个人信息
+
+
+### 接口说明
+
+- 该接口用于对账号进行信息修改。
+- 只接受POST请求。
+
+
+请求URL：/api/scholarsphere/user/changeinfo
+
+请求方式：POST
+
+请求参数：
+
+| 参数名    | 必选 | 类型   | 说明     |
+| --------- | ---- | ------ | -------- |
+| keys     | 是   | string | 需要修改项目。可在`enum=["password","description"]`中选择多项，不修改则不传递对应项|
+| vals | 是   | string | 修改项目的对应的修改值。！顺序必须和keys一一对应。通过""分割开修改值|
+| used_password | 是   | string | 是否修改密码，需要则传入旧密码参数|
+| email | 是   | string | 邮箱|
+返回示例：
+
+成功：
+
+```json
+{
+    "result": 1,
+    "message": "修改成功"
+}
+```
+
+失败返回例：
+
+```json
+{
+    "result": 0,
+    "message": "未收到修改内容！"
+}
+```
+
+请求：
+http
+
+
+
+```
+POST /api/scholarsphere/search/changeinfo HTTP/1.1
+Content-Type: application/json
+
+{
+    "keys" : ""password","description"",
+    "vals" : ""123456","new introduction,by qy"",
+    "used_password" : "123456qy",
+    "email" : "2718106017"
 }
 ```
