@@ -287,7 +287,71 @@ Content-Type: application/json
 }
 ```
 
-# 6.普通搜索
+# 6.添加作品接口
+
+请求URL：/api/scholarsphere/search/add-work/
+
+请求方式：POST
+
+请求参数：
+
+| 参数名       | 必选 | 类型   | 说明                                        |
+| ------------ | ---- | ------ | ------------------------------------------- |
+| open_alex_id | 是   | string | 对应作品的open_alex_id                      |
+| work_name    | 是   | string | 论文的名字                                  |
+| author_id    | 是   | string | 上传pdf的作者的open_alex_id                 |
+| url          | 否   | string | 论文的访问路由                              |
+| pdf          | 是   | file   | 文章pdf                                     |
+| has_pdf      | 否   | int    | 是否有pdf (-1:没有pdf, 0:正在审核, 1:有pdf) |
+| content      | 否   | string | 内容                                        |
+| send_time    | 是   | string | 上传时间                                    |
+| author       | 是   | string | 上传pdf的作者                               |
+| category     | 否   | string | 论文分类                                    |
+
+返回示例：
+
+成功：
+
+```json
+code{
+    "message": "Work added successfully."
+}
+```
+
+失败：
+
+```json
+code{
+    "error": "Invalid request method."
+}
+```
+
+# 7. 获取作品PDF接口
+
+请求URL：/api/scholarsphere/search/get-work-pdf/<work_id>/
+
+请求方式：GET
+
+请求参数：无
+
+返回示例：
+
+成功：
+
+返回PDF文件作为下载响应
+
+失败：
+
+```json
+code{
+    "error": "Work not found."
+}
+code{
+    "error": "PDF not found."
+}
+```
+
+# 8.普通搜索
 
 ### 接口说明
 
@@ -357,7 +421,8 @@ Content-Type: application/json
 }
 ```
 
-# 7. 实名绑定
+
+# 9. 实名绑定
 
 
 ### 接口说明
@@ -398,9 +463,7 @@ Content-Type: application/json
 }
 ```
 
-
-
-# 8. 修改个人信息
+# 10. 修改个人信息
 
 
 ### 接口说明
@@ -457,3 +520,5 @@ Content-Type: application/json
     "email" : "2718106017"
 }
 ```
+
+

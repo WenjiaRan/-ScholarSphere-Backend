@@ -1,10 +1,10 @@
 # publish/views.py
 import datetime
-import re
+
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
-from user.models import *
+from user.models import User
 
 
 def check_number(password):
@@ -23,8 +23,6 @@ def check_mark(password):
     for c in password:
         if not (c.isnumeric() or 'a' <= c <= 'z' or 'A' <= c <= 'Z'):
             return True
-
-
 def check_legal(password):
     if len(password) < 8 or len(password) > 16:
         return {'result': 0, 'message': '长度需为8-16个字符,请重新输入。'}
@@ -42,25 +40,23 @@ def check_legal(password):
             else:
                 return {'result': 0, 'message': '至少含数字/字母/字符2种组合，请重新输入。'}
 
-
-def check_password(email, password):
+def check_password(email,password):
     if User.objects.filter(email=email, password=password).exists():
         return True
     return False
 
-
 def check_password_wrong_45times(email):
     user = User.objects.filter(email=email).first()
-    if user.times_of_wa_password == 5:
-        user.times_of_wa_password = 0
+    if user.times_of_wa_password==5:
+        user.times_of_wa_password=0
         user.save()
         return True
-    user.times_of_wa_password = user.times_of_wa_password + 1
+    user.times_of_wa_password=user.times_of_wa_password+1
     user.save()
     return False
 
 
-@csrf_exempt  # 跨域设置
+@csrf_exempt    # 跨域设置
 def register(request):
     """
     :param request: 请求体
@@ -86,14 +82,13 @@ def register(request):
 
         message = check_legal(password1)
 
-        user = User(email=email, password=password1)
+        user = User( email=email, password=password1)
         user.save()
         result = {'result': 1, 'message': r"注册成功!"}
         return JsonResponse(result)
     else:
         result = {'result': 0, 'message': r"请求方式错误！"}
         return JsonResponse(result)
-
 
 @csrf_exempt
 def checkmailregistered(request):
@@ -108,38 +103,34 @@ def checkmailregistered(request):
         result = {'result': 0, 'message': r"请求方式错误！"}
         return JsonResponse(result)
 
-
 def check_accessible(user):
     date = user.forbiden_start_time
     if date is None:
         return True
     now = get_standard_time(datetime.datetime.now())
-    if date.day < now.day:
-        user.forbiden_start_time = None
+    if date.day<now.day:
+        user.forbiden_start_time=None
         user.save()
         return True
     return False
 
-
 def get_standard_time(time):
-    time_str = time.strftime("%Y-%m-%d %H:%M:%S")
-    new_time = datetime.datetime.strptime(time_str, "%Y-%m-%d %H:%M:%S")
+    time_str=time.strftime("%Y-%m-%d %H:%M:%S")
+    new_time=datetime.datetime.strptime(time_str,"%Y-%m-%d %H:%M:%S")
     return new_time
 
-
 def check_autologin(user):
-    date = user.sevendays_autologin_start_time
+    date=user.sevendays_autologin_start_time
     if date is None:
         return False
-    now = get_standard_time(datetime.datetime.now())
-    if (now - date).days >= 7:
-        user.sevendays_autologin_start_time = None
+    now=get_standard_time(datetime.datetime.now())
+    if (now-date).days >= 7:
+        user.sevendays_autologin_start_time=None
         user.save()
         return False
     return True
 
-
-@csrf_exempt  # 跨域设置
+@csrf_exempt    # 跨域设置
 def login(request):
     """
     :param request: 请求体
@@ -164,10 +155,10 @@ def login(request):
 
         if check_accessible(user.first()):
             password = request.POST.get('password', '')
-            if len(password) == 0:
+            if len(password)==0:
                 result = {'result': 0, 'message': r'密码不能为空!'}
                 return JsonResponse(result)
-            if not check_password(email, password):
+            if not check_password(email,password):
                 if check_password_wrong_45times(email):
                     user.update(forbiden_start_time=get_standard_time(datetime.datetime.now()))
                     user.first().save()
@@ -187,8 +178,7 @@ def login(request):
         result = {'result': 0, 'message': r"请求方式错误！"}
         return JsonResponse(result)
 
-
-@csrf_exempt  # 跨域设置
+@csrf_exempt    # 跨域设置
 def autologin(request):
     """
     :param request: 请求体
@@ -209,9 +199,9 @@ def autologin(request):
         result = {'result': 0, 'message': r"请求方式错误！"}
         return JsonResponse(result)
 
-
 def user_get_by_name(user_name):
     return User.objects.filter(real_info__name=user_name, has_real_info=True)
+
 @csrf_exempt
 def real_info_set(request):
     if request.method == 'POST':

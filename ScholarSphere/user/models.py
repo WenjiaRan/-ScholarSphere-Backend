@@ -23,3 +23,6 @@ class User(models.Model):
     description = models.CharField('个人简介', max_length=50)
     url = models.CharField('个人主页的访问路由', max_length=200)
     real_info = models.ForeignKey(RealInformation, on_delete=models.CASCADE, db_column='real_info', db_index=True, null=True)
+
+
+
