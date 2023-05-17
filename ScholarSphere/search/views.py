@@ -3,6 +3,10 @@ from django.views.decorators.csrf import csrf_exempt
 from article.models import Work
 import datetime
 from django.db.models import Q
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from article.models import Work
+from django.http import HttpResponse, Http404
 
 @csrf_exempt
 def advancesearch(request):
@@ -53,3 +57,41 @@ def advancesearch(request):
             ]
         }
         return JsonResponse(response_data)
+
+
+@csrf_exempt
+def add_work(request):
+    if request.method == 'POST':
+        data = request.POST
+        work = Work(
+            open_alex_id=data.get('open_alex_id'),
+            work_name=data.get('work_name'),
+            author_id=data.get('author_id'),
+            url=data.get('url'),
+            pdf=request.FILES.get('pdf'),
+            has_pdf=int(data.get('has_pdf', 1)),
+            content=data.get('content'),
+            send_time=data.get('send_time'),
+            author=data.get('author'),
+            category=data.get('category')
+        )
+        work.save()
+        return JsonResponse({'message': 'Work added successfully.'})
+    else:
+        return JsonResponse({'error': 'Invalid request method.'})
+
+
+
+
+def get_work_pdf(request, work_id):
+    try:
+        work = Work.objects.get(id=work_id)
+        if work.pdf:
+            with work.pdf.open('rb') as f:
+                response = HttpResponse(f.read(), content_type='application/pdf')
+                response['Content-Disposition'] = f'attachment; filename="{work.pdf.name}"'
+                return response
+        else:
+            raise Http404('PDF not found.')
+    except Work.DoesNotExist:
+        raise Http404('Work not found.')
