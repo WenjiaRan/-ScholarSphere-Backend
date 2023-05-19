@@ -1,25 +1,13 @@
-<<<<<<< HEAD
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.core import serializers
 from article.models import Work
 import datetime
 from django.db.models import Q
-from user.views import get_by_name
-from article.views import article_get_by_name,article_get_by_id,article_get_by_author
-=======
-import datetime
-
-from django.db.models import Q
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-
-from article.models import Work
+from django.http import HttpResponse, Http404
 from article.views import article_get_by_name, article_get_by_id, article_get_by_author
 from user.views import user_get_by_name
 
 
->>>>>>> check_branch
 @csrf_exempt
 def advancesearch(request):
     if request.method == 'POST':
@@ -72,33 +60,46 @@ def advancesearch(request):
 
 
 @csrf_exempt
+def add_work(request):
+    if request.method == 'POST':
+        data = request.POST
+        work = Work(
+            open_alex_id=data.get('open_alex_id'),
+            work_name=data.get('work_name'),
+            author_id=data.get('author_id'),
+            url=data.get('url'),
+            pdf=request.FILES.get('pdf'),
+            has_pdf=int(data.get('has_pdf', 1)),
+            content=data.get('content'),
+            send_time=data.get('send_time'),
+            author=data.get('author'),
+            category=data.get('category')
+        )
+        work.save()
+        return JsonResponse({'message': 'Work added successfully.'})
+    else:
+        return JsonResponse({'error': 'Invalid request method.'})
+
+
+
+
+def get_work_pdf(request, work_id):
+    try:
+        work = Work.objects.get(id=work_id)
+        if work.pdf:
+            with work.pdf.open('rb') as f:
+                response = HttpResponse(f.read(), content_type='application/pdf')
+                response['Content-Disposition'] = f'attachment; filename="{work.pdf.name}"'
+                return response
+        else:
+            raise Http404('PDF not found.')
+    except Work.DoesNotExist:
+        raise Http404('Work not found.')
+
+
+@csrf_exempt
 def normal_search(request):
     if request.method == 'POST':
-<<<<<<< HEAD
-        search_method=request.get('search_method')
-        search_key=request.get('search_key')
-        if search_method is 'scholar':
-            results=get_by_name(search_key)
-            if results is None:
-                result = {'result': 0, 'message': r"未查询到此人！"}
-                return JsonResponse(result)
-            serialized_data = serializers.serialize("json", results, fields=('id', 'url', 'description'))
-
-        else:
-            search_type=request.get('search_type')
-            if search_type is 'name':
-                results=article_get_by_name(search_key)
-            else:
-                results=article_get_by_id(search_key)
-            if results is None:
-                result = {'result': 0, 'message': r"未查询到相关文章！"}
-                return JsonResponse(result)
-            serialized_data = serializers.serialize("json", results, fields=('id', 'url','work_name'))
-        data = {
-            "items": serialized_data
-        }
-        return JsonResponse(data)
-=======
         search_method=request.POST.get('search_method')
         search_key=request.POST.get('search_key')
         if search_method == 'scholar':
@@ -147,7 +148,6 @@ def normal_search(request):
                 ]
             }
         return JsonResponse(response_data)
->>>>>>> check_branch
     else:
         result = {'result': 0, 'message': r"请求方式错误！"}
         return JsonResponse(result)

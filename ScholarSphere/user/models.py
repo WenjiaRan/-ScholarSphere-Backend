@@ -16,13 +16,6 @@ class User(models.Model):
     # forbiden_start_time、
     forbiden_start_time = models.DateTimeField('禁止登陆开始时间', default=None, null=True)
     # 7days_autologin_start_time
-<<<<<<< HEAD
-    sevendays_autologin_start_time = models.DateTimeField('设置自动登录开始时间',default=None)
-    is_scholar=models.BooleanField(default=False)
-    real_info = models.ForeignKey(RealInformation,on_delete=models.CASCADE,db_column='real_info',db_index=True,null=True)
-    description=models.CharField('个人简介', max_length=50,default=None)
-    url = models.CharField('个人主页的访问路由', max_length=200, null=True,default=None)
-=======
     sevendays_autologin_start_time = models.DateTimeField('设置自动登录开始时间', default=None, null=True)
 
     is_scholar = models.BooleanField(default=False)
@@ -30,4 +23,6 @@ class User(models.Model):
     description = models.CharField('个人简介', max_length=50)
     url = models.CharField('个人主页的访问路由', max_length=200)
     real_info = models.ForeignKey(RealInformation, on_delete=models.CASCADE, db_column='real_info', db_index=True, null=True)
->>>>>>> check_branch
+
+
+
