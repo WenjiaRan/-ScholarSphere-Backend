@@ -521,4 +521,46 @@ Content-Type: application/json
 }
 ```
 
+# 10. 查询个人信息
+
+请求URL：/api/scholarsphere/user/showselfinfo
+
+请求方式：POST
+
+请求参数：
+
+| 参数名    | 必选 | 类型   | 说明     |
+| --------- | ---- | ------ | -------- |
+| email     | 是   | string | 用户邮箱 |
+
+返回示例：
+
+成功：
+
+```
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+    "results": [
+        {
+            "password": "qy1",
+            "email": "2718106017",
+            "has_real_info": "0",
+            "description": "i am qy",
+            "url": "http://example.com"
+        }
+    ]
+}
+```
+
+失败：
+
+```json
+{
+    "result": 0,
+    "message": "请求方式错误!"
+}
+```
+
 

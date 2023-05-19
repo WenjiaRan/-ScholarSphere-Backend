@@ -293,7 +293,7 @@ def show_self_info(request):
                         'email': result.email,
                         'has_real_info': result.has_real_info,
                         'description': result.description,
-                        'url': result.url,
+                        'url': result.url
                     }
                 ]
             }
