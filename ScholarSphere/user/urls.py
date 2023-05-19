@@ -7,7 +7,8 @@ urlpatterns = [
     path('user/checkmailregistered',checkmailregistered),
     path('user/autologin',autologin),
     path('user/login',login),
-        path('user/changeinfo',change_info),
+    path('user/changeinfo',change_info),
     path('user/realinfoset', real_info_set),
+    path('user/showselfinfo',show_self_info)
     # 这是一个样例，指定路由名为url_name，对应处理函数为当前app内views.py中的api_name
 ]

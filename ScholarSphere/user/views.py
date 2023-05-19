@@ -3,8 +3,8 @@ import datetime
 
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-
-from user.models import User
+import re
+from user.models import *
 
 
 def check_number(password):
@@ -261,6 +261,43 @@ def change_info(request):
         result = {'result': 1, 'message': r"修改成功"}
         return JsonResponse(result)
 
+    else:
+        result = {'result': 0, 'message': r"请求方式错误！"}
+        return JsonResponse(result)
+
+@csrf_exempt  # 跨域设置
+def show_self_info(request):
+    if request.method == 'POST':
+        email=request.get('email')
+        result=User.objects.filter(email=email).first()
+        if result.has_real_info:
+            response_data = {
+                'results': [
+                    {
+                        'password': result.password,
+                        'email': result.email,
+                        'has_real_info': result.has_real_info,
+                        'description' : result.description,
+                        'url': result.url,
+                        'name':result.real_info.name,
+                        'phone':result.real_info.phone,
+                        'id_num':result.real_info.id_num
+                    }
+                ]
+            }
+        else:
+            response_data = {
+                'results': [
+                    {
+                        'password': result.password,
+                        'email': result.email,
+                        'has_real_info': result.has_real_info,
+                        'description': result.description,
+                        'url': result.url,
+                    }
+                ]
+            }
+        return JsonResponse(response_data)
     else:
         result = {'result': 0, 'message': r"请求方式错误！"}
         return JsonResponse(result)
