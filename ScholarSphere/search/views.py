@@ -82,10 +82,11 @@ def add_work(request):
 
 
 
-
-def get_work_pdf(request, work_id):
+@csrf_exempt
+def get_work_pdf(request):
     try:
-        work = Work.objects.get(id=work_id)
+        data=request.POST
+        work = data.get('work_id')
         if work.pdf:
             with work.pdf.open('rb') as f:
                 response = HttpResponse(f.read(), content_type='application/pdf')
