@@ -717,3 +717,150 @@ Content-Type: application/json
     "message": "无新消息!"
 }
 ```
+
+# 15 获取PDF接口
+
+此API用于获取特定论文PDF文件。
+
+### 请求
+
+- URL：`/api/scholarsphere/search/get_work_pdf`
+- 请求方法：POST
+
+#### 请求参数
+
+| 参数名  | 必选 | 类型   | 说明   |
+| ------- | ---- | ------ | ------ |
+| work_id | 是   | string | 论文ID |
+
+### 响应
+
+- 响应状态码：200 OK
+- 响应内容类型：application/pdf
+
+#### 响应字段
+
+| 字段                | 类型   | 说明                   |
+| ------------------- | ------ | ---------------------- |
+| Content-Disposition | string | 附件的显示方式及文件名 |
+| 内容                | 文件流 | 工作PDF文件            |
+
+### 错误响应
+
+- 响应状态码：404 Not Found
+- 响应内容：JSON对象
+
+```
+jsonCopy code{
+    "result": 0,
+    "message": "PDF文件未找到。"
+}
+```
+
+### 示例
+
+#### 请求
+
+```
+POST /api/get_work_pdf
+Content-Type: application/json
+
+{
+    "work_id": "12345"
+}
+```
+
+#### 响应
+
+```
+HTTP/1.1 200 OK
+Content-Type: application/pdf
+Content-Disposition: attachment; filename="work.pdf"
+
+<工作PDF文件流>
+```
+
+#### 错误响应
+
+```
+cssCopy codeHTTP/1.1 404 Not Found
+Content-Type: application/json
+
+{
+    "result": 0,
+    "message": "PDF文件未找到。"
+}
+```
+
+# 16添加收藏接口
+
+请求URL： `/api/scholarsphere/collection/add_to_collection`
+
+请求方式：POST
+
+请求参数：
+
+| 参数名  | 必选 | 类型   | 说明          |
+| ------- | ---- | ------ | ------------- |
+| user_id | 是   | string | 用户 ID       |
+| work_id | 是   | string | 对应作品的 ID |
+
+返回示例：
+
+成功：
+
+```
+jsonCopy code{
+    "status": "success"
+}
+```
+
+失败：
+
+```
+jsonCopy code{
+    "error": "Invalid method"
+}
+```
+
+------
+
+# 17 展示收藏接口
+
+请求URL： `/api/scholarsphere/collection/show_collection`
+
+请求方式：GET
+
+请求参数：
+
+| 参数名  | 必选 | 类型   | 说明    |
+| ------- | ---- | ------ | ------- |
+| user_id | 是   | string | 用户 ID |
+
+返回示例：
+
+成功：
+
+```
+jsonCopy code[
+    {
+        "id": 1,
+        "work_id": "work1",
+        "user_id": "user1@example.com"
+    },
+    {
+        "id": 2,
+        "work_id": "work2",
+        "user_id": "user1@example.com"
+    },
+    ...
+]
+```
+
+失败：
+
+```
+jsonCopy code{
+    "error": "Invalid method"
+}
+```

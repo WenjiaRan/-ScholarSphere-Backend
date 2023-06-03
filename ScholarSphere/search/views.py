@@ -8,6 +8,10 @@ from article.views import article_get_by_name, article_get_by_id, article_get_by
 from user.views import user_get_by_name
 
 
+from django.http import JsonResponse, HttpResponseBadRequest
+import json
+from django.core.exceptions import ValidationError
+
 @csrf_exempt
 def advancesearch(request):
     if request.method == 'POST':
@@ -15,7 +19,21 @@ def advancesearch(request):
         search_date_to = request.POST.get('searchDateto', None)
         search_type = request.POST.get('searchType', None)
         search_content = request.POST.get('searchContent', None)
-        additional_search_conditions = request.POST.get('additionalSearchCondition', [])
+        additional_search_conditions_json = request.POST.get('additionalSearchCondition', None)
+
+        # Verify additionalSearchCondition
+        if additional_search_conditions_json is None:
+            return HttpResponseBadRequest("additionalSearchCondition is required.")
+        try:
+            additional_search_conditions = json.loads(additional_search_conditions_json)
+        except json.JSONDecodeError:
+            return HttpResponseBadRequest("Malformed JSON in additionalSearchCondition.")
+
+        for condition in additional_search_conditions:
+            if not isinstance(condition, dict):
+                return HttpResponseBadRequest("Each item in additionalSearchCondition must be an object.")
+            if "bool" not in condition or "searchType" not in condition or "searchContent" not in condition:
+                return HttpResponseBadRequest("Each item in additionalSearchCondition must contain 'bool', 'searchType', and 'searchContent'.")
 
         # 构造Q对象
         q_objects = Q()
@@ -57,6 +75,7 @@ def advancesearch(request):
             ]
         }
         return JsonResponse(response_data)
+
 
 
 @csrf_exempt

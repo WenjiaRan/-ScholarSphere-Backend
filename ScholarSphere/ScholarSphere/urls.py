@@ -22,5 +22,6 @@ urlpatterns = [
     path('api/scholarsphere/', include(('user.urls','user'))),
     path('api/scholarsphere/', include(('search.urls','search'))),
     path('api/scholarsphere/', include(('article.urls','article'))),
-    path('api/scholarsphere/', include(('chat.urls','chat')))
+    path('api/scholarsphere/', include(('chat.urls','chat'))),
+    path('api/scholarsphere/', include(('collection.urls','collection')))
 ]
