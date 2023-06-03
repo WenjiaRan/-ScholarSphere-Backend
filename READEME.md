@@ -7,3 +7,10 @@ python -m venv venv
 pip install -r requirements.txt
 python run.py
 ```
+
+
+论文上传命令使用方法：
+```
+python manage.py import_pdf article/articleList
+```
+所有需要上传的pdf文件以.pdf后缀形式储存在article/articleList目录下

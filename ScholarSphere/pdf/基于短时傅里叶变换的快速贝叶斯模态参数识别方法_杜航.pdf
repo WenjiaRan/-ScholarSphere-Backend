@@ -1,0 +1,779 @@
+建筑结构学报　JournalofBuildingStructures第44卷第5期2023年5月
+Vol.44No.5May2023028
+文章编号:1000-6869(2023)05-0305-10 DOI:10.14006/j.jzjgxb.2022.0136
+基于短时傅里叶变换的快速贝叶斯
+模态参数识别方法
+杜　航,徐海巍,楼文娟
+(浙江大学建筑工程学院,浙江杭州310058)
+摘要:为反映结构非平稳响应信号的时频特性,提出基于短时傅里叶变换的快速贝叶斯模态参数识别(FBST)方法。该方法
+采用短时傅里叶变换代替傅里叶变换进行模态参数识别,使模态参数的识别同时具有时频特性,同时能够给出识别结果的
+不确定性。利用时域分解解耦技术,将多自由度多模态响应信号转变为单自由度单模态响应信号以提升计算效率,推导得
+到高信噪比下负对数似然函数的表达式。采用数值算例验证了FBST方法在时变频率和阻尼比识别上的有效性。在此基
+础上,针对某大跨柔性光伏支架结构气弹模型的风洞试验数据和某高层建筑风振实测加速度响应数据,利用FBST方法识
+别了对应结构的阻尼比、频率,并与连续小波变换和Hilbert-Huang变换等经典方法的识别结果进行对比。数值算例分析结
+果显示,对于时变、非时变信号,FBST方法均能识别与理论值较为一致的阻尼比和频率结果。对于大跨柔性光伏支架结构
+的气弹试验数据和高层建筑实测加速度响应,FBST方法识别得到的频率结果与连续小波变换以及Hilbert-Huang的结果较
+为一致,而识别出的阻尼比存在较大变异系数。
+关键词:模态参数识别;时域分解;短时傅里叶变换;快速贝叶斯;时频特性;非平稳过程
+中图分类号:TU311.3　　文献标志码:A
+FastBayesianmodalparameteridentificationmethod
+basedonshort-timeFouriertransform
+DUHang,XUHaiwei,LOUWenjuan
+(CollegeofCivilEngineeringandArchitecture,ZhejiangUniversity,Hangzhou310058,China)
+Abstract:Inordertodescribethetime-frequencycharacteristicsofnon-stationaryresponsesignals,amodal
+identificationmethodbasedonfastBayesianandshort-timeFouriertransform(STFT)wasproposed.Thismethoduses
+short-timeFouriertransformtoreplaceclassicalFouriertransformtoidentifymodalparameters,sothatthe
+characteristicsofmodalparametersinbothtimeandfrequencydomaincanbeobtained.Usingthetime-domain
+decompositiondecoupling(TDD)technology,themulti-DOFmulti-modalresponsesignalwasconvertedintoasingle-
+DOFsingle-modalresponsesignal,thusimprovingthecomputationalefficiency.TheexpressionofNLLF(negative
+log-likelihoodfunction)waspresentedunderhighsignal-to-noiseratios.Numericalexampleswereusedtoverifythe
+validityoftheproposedfastBayesianSTFTmethodinidentificationoftime-varyingfrequenciesanddampingratios.In
+addition,theaeroelasticwindtunneltestdataofalarge-spanflexiblephotovoltaicsupportstructureandfieldmeasured
+wind-inducedaccelerationresponsesofahigh-risebuildingwereidentifiedwiththeproposedmethodtoderivethe
+dampingratioandfrequencyofthecorrespondingstructures.Theresultswerecomparedwiththeonesobtainedfrom
+theclassicalcontinuouswavelettransformandHilbert-Huangtransform,whichshowsthattheidentifieddampingratio
+andfrequencybasedonFBSTareconsistentwiththeoreticalonesforbothtime-dependentandtime-independent
+simulationsignals.Foraeroelastictestdataofthelarge-spanflexiblephotovoltaicsupportstructureandfieldmeasured
+accelerationdataofthehigh-risebuilding,theFBSTprovidesfrequenciesconsistentwithonesfromthecontinuous
+wavelettransformandHilbert-Huangtransform,whiletheobtaineddampingratioshowsalargecoefficientofvaration
+Keywords:modalparameteridentification;time-domaindecompositiondecoupling(TDD);short-timeFourier
+transform(STFT);fastBayesian;timeandfrequencydomaincharacteristics;non-stationaryprocess
+基金项目:国家自然科学基金项目(51978614 ),浙江省自然科学基金项目(LY19E080026)。
+作者简介:杜航,出生于1996年,男,硕士研究生,主要从事结构风振响应及抗风研究。email:21912166 @zju.edu.cn
+通信作者:徐海巍,出生于1986年,男,工学博士,副教授,主要从事结构风工程研究。email:haiweix@zju.edu.cn
+收稿日期:2022年3月
+5030　引言
+模态和动力特性参数识别是结构健康监测中的
+关键技术。环境激励下的动力特性测试因具有激励
+简单,测试方便等优点而成为近年来应用于结构模
+态参数识别的重要方法。然而大部分基于环境激励
+的模态参数识别方法没有考虑识别结果的不确定
+性。针对结构模态识别结果的不确定性评估问题,
+Yuen等[1-4]提出了基于贝叶斯(Bayesian)的傅里叶
+变换方法(FFT)和功率谱密度法的模态识别方法,系
+统研究了傅里叶变换系数和功率谱密度的统计特
+征,通过建立负对数似然函数(NLLF)和模态参数的
+后验概率密度函数(probabilitydensityfunction,PDF)
+的关系,对NLLF进行无约束优化以获得模态参数的
+最优估计值(mostprobablevalue,MPV),并利用变异
+系数(coefficientofvariation,COV)衡量其不确定性。
+然而在确定模态参数的MPV及其后验协方差矩阵时
+需要涉及多维的数值优化和病态矩阵求逆问题,计
+算过程繁杂,在实际问题的求解中难以实施。为解
+决这一问题,Au等[5-8]和Ni等[9]提出了快速贝叶斯
+fastBayesian)FFT方法,针对分离模态(well-separated
+mode)和密集模态(closemodes),基于数值优化和矩
+阵理论对fastBayesianFFT方法的目标函数进行简
+化,同时还推导了模态参数的后验协方差矩阵的解
+析表达式,显著提高了fastBayesianFFT方法在目标
+函数优化求解和协方差矩阵计算中的效率。韩建平
+等[10]、黄铭枫等[11]、黄鑫[12]、Xia等[13]、Ni等[14]利用
+fastBayesianFFT方法识别了不同结构物的模态参
+数。吴杰等[15]、徐洪俊等[16]结合时域分解技术
+(TDD)提出了模态参数识别的BayesianTDD方法,
+并利用AR(autoregression)功率谱代替傅里叶谱进行
+了参数改进。
+以上研究大多仅从频域角度对结构响应数据进
+行分析,虽然可以评估模态参数识别结果的不确定
+性,但是未能反映结构动力参数的时频特性。然而,
+在环境激励下(如风荷载)的柔性结构由于流固耦
+合、气动时变效应等复杂因素的影响易产生非平稳
+响应特征,例如车辆-桥梁耦合振动时变系统、风机叶
+片的振动响应以及台风等极端天气作用下的高层建
+筑和桥梁的振动响应等。目前已有关于非平稳信号
+时变参数识别研究,例如:乌建中等[17]利用短时傅里
+叶变换(STFT)分析了风机叶片在健康状态及不同裂
+纹损伤状态下自由衰减时变振动信号及其变化规
+律,通过信号识别结果的差异进行大型风机叶片损
+伤的诊断。胡振邦等[18]将小波降噪与短时傅里叶变
+换相结合,提出了对电主轴非平稳振动信号特征信息准确提取的方法,并通过数值仿真和试验验证了
+该方法的有效性。陈学军等[19]基于经验小波变换分
+析了非线性和非平稳特性的风力发电机振动信号,
+发现经验小波变换在时频能量谱上能更好地体现原
+有振动信号的特征。王超等[20]利用同步挤压小波变
+换识别了桥梁在移动车辆荷载作用下的结构时变参
+数,发现该方法在能有效识别瞬时频率,且有一定的
+抗噪性。王立岩等[21]采用Hilbert-Huang变换识别得
+到了时变阻尼自由振动系统、Duffing振动系统和Van
+derPol振动系统等非线性振动系统的模态参数,发
+现Hilbert-Huang变换具有良好的识别精度。
+考虑到上述传统时频分析方法无法衡量识别参
+数的不确定性,同时考虑到小波变换在分析结构响
+应信号的长周期分量时频率精度较低[22],本文中提
+出基于短时傅里叶变换的fastBayesian模态参数识
+别(fastBayesianSTFT,FBST)方法,在反映响应信号
+的时变信息的同时,给出识别结果的可能变异区间
+以衡量其不确定性。采用数值算例验证FBST方法
+的有效性。进一步,分别针对某大跨柔性支撑光伏
+支架气弹模型风洞试验的位移响应数据和某高层建
+筑现场实测风振加速度响应数据,采用FBST方法获
+得了结构的频率和阻尼比随时间的变化特性和相应
+的不确定性,并与经典连续小波变换和Hilbert-Huang
+变换等确定性识别方法进行了对比分析,以检验本
+文方法的适用性与可靠性。
+1　模态参数识别方法
+由于傅里叶变换对频谱的描绘具有全局性,不
+能反映时间维度局部区域上的特征,且在时间域内
+的任何频率变化都会影响变换的结果。为了描述信
+号的时频特性,首先引入时域分解技术对原始信号
+进行解耦,有效降低计算量;其次通过引入短时傅里
+叶变换(STFT),提出fastBayesian模态参数识别方
+法;最后基于高斯随机过程,利用泰勒展开对负对数
+似然函数(NLLF)进行简化,并给出了在高信噪比下
+NLLF的表达式,利用Hessian矩阵和后验模态参数
+协方差矩阵对识别参数的不确定性进行评估。
+1.1　信号时域分解方法
+时域分解方法可直接利用结构振动时域响应
+(位移、速度或加速度)信号进行模态参数识别[23]。
+记结构的输出响应信号向量为Y(Y∈Rn),则响应信
+号时间历程自相关矩阵E为
+E=YYT(1)
+　　假设结构振型矩阵Φ满足正则化约束ΦTΦ=
+I[15],对E进行奇异值分解(SVD),通过取特征值λi
+对应的特征向量ϕi即可确定结构振型。由于输出响
+603应信号通常存在多个模态,可通过带通滤波器对输
+出响应信号进行滤波,将其转变为单模态信号。取
+最大特征值λmax对应的特征向量ϕm即为振型ϕi的
+MPV[16]。此时,记:
+y=ϕT
+mY (2)
+则原多自由度多模态响应信号转变为单自由度单模
+态响应信号。
+1.2　短时傅里叶变换理论
+短时傅里叶变换(STFT)时,首先利用一个随时
+间滑动的分析窗对非平稳信号进行加窗截断处理,
+然后将截断的时间信号进行傅里叶变换,从而得到
+响应信号的时频特性,其表达式如下式:
+S(t,f)=∫+∞
+-∞[x(τ)g(τ-t)]e-2iπfτdτ(3)
+其中,x(τ)为某响应信号时程,t为待分析时刻,f为
+频率,i为虚数,g(τ-t)为窗函数,τ为窗函数中心坐
+标所对应的时刻。
+常见的窗函数有矩形窗、Hanning窗、Kaiser窗和
+Gaussian窗等。由式(3)可知,短时傅里叶变换先将
+信号与窗函数相乘后再进行傅里叶变换,采用通过
+时间窗内的有限信号来表示某一时刻的信号特征。
+利用窗函数将非平稳信号划分为不同的时间或频率
+段,并假设划分后信号具有平稳性。随着窗函数在
+时间轴上的移动,得到一系列的频谱函数,以反映信
+号的时频特性。对于短时傅里叶变换,合适的窗函
+数和窗宽能有效减少频谱泄露和混叠现象[24]。由于
+窗的宽度影响着时频域的分辨率,对于面积固定的
+时频窗,时间分辨率和频率分辨率成反比[24-25],如下
+式所示:
+Δt=1
+‖g(t)‖2∫+∞
+-∞(t-t0)|g(t)|2dt [ ]1/2
+(4)
+Δω=1
+2π‖g(ω)‖2∫+∞
+-∞(ω-ω0)|^g(ω)|2dω [ ]1/2
+(5)
+ΔtΔω≥1
+2(6)
+式中,Δt、Δω分别为短时傅里叶变换的时间分辨率
+和频率分辨率,^g(ω)为窗函数g(t)的傅里叶变换,
+t0和ω0分别为窗口的中心,ω为圆频率。当窗函数为
+高斯窗函数时,联合时频面积最小,式(6)取等号。
+1.3　基于短时傅里叶变换的fastBayesian模态参
+数识别方法
+假定结构振动响应测量信号由真值和预测误差
+组成,对于某n个位移响应样本信号可表示为
+yn,j=y′n,j+en,j (7)
+其中:yn,j、y′n,j、en,j分别为结构位移响应测量信号、位
+移响应真值和预测误差,j为采样点序号,j为1、2、…、N,N为每个通道采样数。
+通过时域分解技术,将yn,j转换为单自由度响应
+信号,则单自由度响应信号yj在时刻ti的短时傅里叶
+变换Yk(ti,f)为
+Yk(ti,f)=
+2Δt
+N∑N
+j=1yjg(t-jΔt)exp-2πi(k-1)(j-1)
+N [ ]
+(8)
+其中,k=1,2,…,N;Δt为采样时间间隔;g(t-jΔt)
+为窗函数。
+由于Gaussian窗函数在傅里叶变换中保持不变
+且具有最优的时频分辨率[25],因此采用Gaussian窗
+函数进行短时傅里叶变换。记Fk=Yk(ti,f),定义向
+量Zk=[Re(Fk)Im(Fk)]T∈R2n,其中Re(Fk)、
+Im(Fk)分别为yj的短时傅里叶变换Fk对应于时刻ti
+的实部和虚部。根据贝叶斯定理,待识别的模态参
+数向量θ后验的后验概率密度函数可表示为
+p(θ|{Zk})∝p(θ)p({Zk}|θ)(9)
+　　模态参数θ包括自振频率f、阻尼比ζ、预测误差
+功率谱密度Se和模态激励下功率谱密度S。假定模
+态参数θ服从均匀分布,则
+p(θ|{Zk})∝p({Zk}|θ)(10)
+　　对于较大的N和较小的Δt,可以证明在不同频
+率下Zk是渐近独立且服从高斯分布的,于是有:
+p({Zk}|θ)=
+∏
+k(2π)-ndet(Ck(θ))-1/2exp-1
+2ZT
+kC-1
+k(θ)Zk [ ]
+(11)
+其中,det(·)表示矩阵的行列式,Ck(θ)为Zk的协
+方差矩阵,其表达式为
+Ck(θ)=1
+2Re(Hk)-Im(Hk)
+Im(Hk)Re(Hk)[ ]+Se
+2I2(12)
+式中:I2为2n阶单位矩阵,I2∈R2n;Hk为传递函数,
+其表达式为
+Hk=Shkh∗
+k　　　　　　 (13)
+式中,h∗
+k为hk的复共轭函数,hk的表达式如下:
+hk=(2πifk)-q/[(β2
+k-1)+i(2ζβk)](14)
+βk=f/fk (15)
+式中:fk=(k-1)/NΔt;当测量信号为加速度信号时
+q=0,当测量信号为速度信号时q=1,当测量信号为
+位移信号时q=2。
+理论上,可以通过对式(11)的似然函数求极值
+确定模态参数θ的MPV。为方便计算,通常利用式
+(11)的负对数似然函数(NLLF)进行极值求解,则:
+p(θ∣{Zk})∝exp[-L(θ)](16)
+式中,L(θ)为对数似然函数。
+703L(θ)=1
+2∑
+k[lndet(Ck(θ))+
+ZT
+kCk(θ)-1Zk] (17)
+利用Taylor公式将L(θ)进行二阶展开,有
+L(θ)≈L(^θ)+1
+2(θ-^θ)THL(^θ)(θ-^θ)
+(18)
+式中:HL(θ)为L(θ)的Hessian矩阵;^θ为泰勒展开
+的原点。
+当^θ取得MPV时,L(^θ)=0。将式(18)代入式
+(16),得到:
+p(θ∣{Zk})∝exp-1
+2(θ-^θ)T^C-1(θ-^θ) [ ]
+(19)
+式中,^C为模态参数的后验协方差矩阵,^C=
+HL(^θ)-1。
+由于矩阵Hk为Hessian矩阵,则(Im(Hk))T=
+-Im(Hk),(Re(Hk))T=Re(Hk),且Im(Hk)近似为
+0,则Re(Hk)可改写为:
+Re(Hk)=S(2πfk)-2q
+[(β2
+k-1)2+(2ζβk)2]2=SDk　
+(20)
+Dk=(2πfk)-2q
+(β2
+k-1)2+(2ζβk)2 (21)
+　　比较式(12)和式(20)可以得到,
+Ck=1
+2(SDk+Se)I2 (22)
+　　将式(22)、(20)代入式(17)得到,
+L(θ)=-Nfln2+
+∑
+k[ln(SDk+Se)+ZT
+k(SDk+Se)-1Zk](23)
+式中,Nf为所选频带内短时傅里叶变换所对应的点数 。
+综上,f、ζ、S、Se的MPV可以通过对式(23)进行
+无约束优化求得。
+1.4　模态参数的后验不确定性
+后验模态参数的协方差矩阵等价于对数似然函
+数的Hessian矩阵的逆矩阵。L(θ)的Hessian矩阵可
+表达为:
+HL=∂2L
+∂f2∂2L
+∂f∂ζ∂2L
+∂f∂S∂2L
+∂f∂Se
+∂2L
+∂ζ∂f∂2L
+∂ζ2∂2L
+∂ζ∂S∂2L
+∂ζ∂Se
+∂2L
+∂S∂f∂2L
+∂S∂ζ∂2L
+∂S2∂2L
+∂S∂Se
+∂2L
+∂Se∂f∂2L
+∂Se∂ζ∂2L
+∂Se∂S∂2L
+∂S2
+e■
+■|
+|
+|
+|
+|
+|
+|
+|
+||■
+■|
+|
+|
+|
+|
+|
+|
+|
+||(24)
+　　在L(θ)中模态参数θ=[f,ζ,S,Se]的后验不确
+定性可由变异系数[14]衡量。1.5　高信噪比的计算方法
+为了进行高信噪比情况下的参数识别,记γk=
+SDk/Se,γk为在频率fk处的信噪比,同时,在指定的频
+带内,考虑Se/SDk为小量,则有:
+(1+Se/SDk)-1≈-Se/SDk+1≈1(25)
+将式(25)代入式(23)得到:
+L(θ)=-Nfln2+∑
+k[ln(SDk+Se)+ZT
+k(SDk)-1Zk]
+(26)
+　　通过对式(23)进行无约束求解,即可得到f、ζ、
+S、Se的MPV,结合式(24)所确定的后验协方差矩
+阵,通过变异系数可衡量模态参数MPV的不确定
+性。同时,在对位移响应信号进行短时傅里叶变换
+时,通过功率谱估计获得自振频率f的初值,以降低
+计算量。
+1.6　计算步骤
+综上所述,所提的FBST识别方法可以归结为以
+下的流程:
+1)在所选的频率带宽内,利用数字信号带通滤
+波器对原始信号进行带通滤波。
+2)利用时域分解技术,通过式(1)、(2)将原始
+响应信号解耦为单自由度单模态响应信号。
+3)对解耦后单自由度单模态响应信号利用高斯
+窗函数进行短时傅里叶变换,得到任意时刻ti下的短
+时傅立叶变换的实部和虚部,也即Zk,其中窗函数的
+宽度应使时频分辨率满足式(6)的要求且符合实际
+需要。
+4)对式(23)进行无约束数值优化,或在高信噪
+比的情况下通过对式(26)进行无约束寻优,可确定
+模态参数的MPV。
+5)通过式(24)计算对数似然函数的Hessian矩
+阵,对Hessian矩阵取逆得到后验模态参数的协方差
+矩阵。
+6)将模态参数的MPV代入协方差矩阵,通过变
+异系数衡量模态参数的后验不确定性。
+2　数值算例验证
+为了检验FBST方法的有效性,构造模拟了具有
+不同阻尼和频率时变特征的信号,并分别应用该方
+法进行识别。
+2.1　阻尼和频率稳定信号
+构造典型的三自由度响应信号x(t),其表达式
+如下:
+x(t)=∑3
+i=1Aie-2πζifitcos(2π1-ζ2
+ifit-ϕi)
+(27)
+803式中,A1=A2=A3=1,ζ1=0.005,ζ2=0.010,ζ3=
+0.015,ϕ1=ϕ2=ϕ3=0,f1=2Hz,f2=5Hz,f3=8Hz。
+取采样频率fs=500Hz,采样时间为50s,图1中
+给出了模拟信号x(t)的时程曲线和功率谱。
+图1　模拟信号x(t)时频曲线
+Fig.1　Time-frequencycurveofsimulatedsignalx(t)
+利用第1节中FBST方法识别得到模拟信号
+x(t)的前3阶频率f与阻尼比ζ如图2所示,从图中
+可看出,识别结果与理论值吻合较好。
+图2　模拟信号x(t)阻尼和频率识别结果
+Fig.2　Identifieddampingratioandfrequency
+ofsimulatedsignalx(t)2.2　频率时变信号
+为验证FBST方法对于频率时变信号识别的准
+确性,通过正弦函数构造频率时变的响应信号yns,其
+表达式为
+yns=10sin[2π(0.001t1.2+10)t](28)
+　　该响应信号频率的理论值fns为
+fns=0.0022t1.2+10 (29)
+　　在信号中添加5%的噪声,采样频率为50Hz,采
+样时长为150s。图3中给出了频率时变响应信号时
+频特性,分析图3可知,响应信号的频率理论值随着
+时间的增长由10Hz增加至11Hz。利用FBST方法
+识别出的频率值与理论值随时间的变化对比如图4
+所示,可见识别结果与理论值较为一致。
+图3　频率时变模拟信号时频特性
+Fig.3　Time-frequencycharacteristicofsimulated
+signalwithtime-varyingfrequency
+图4　时变信号频率识别结果与理论值对比
+Fig.4　Comparisonofidentifiedtime-varyingfrequency
+andcorrespondingtheoreticalresult
+2.3　阻尼时变信号
+为了得到阻尼比时 变情况下FBST方法的识别效
+果,构造阻尼比时变的振动响应信号, 如下式所示:
+x1(t)+2πfζ1(t)x1(t)+(2πf)2x1(t)=p(t)
+(30)
+式中,p(t)为外部激励荷载。
+该信号阻尼比理论值为
+ζ1(t)=0.01+0.002t (31)
+903　　取采样频率为312.5Hz,采样时长为32s。得到
+阻尼比时变信号时程如图5所示,其中f=5Hz。利
+用FBST方法识别出的阻尼比与理论值随时间的变
+化对比如图6所示。由图6可知,阻尼比识别结果与
+理论值较为一致,误差均在5%以内,表明FBST方法
+对阻尼比时变信号识别的有效性。
+图5　阻尼比时变信号时程曲线
+Fig.5　Timehistoryofsimulatedsignalwith
+time-varyingdampingratio
+图6　阻尼比时变信号识别结果与理论值对比
+Fig.6　Comparisonofidentifiedtime-varyingdamping
+ratioandcorrespondingtheoreticalresult
+3　FBST方法的工程应用
+为进一步研究FBST方法在不同工程背景下对
+结构动力特性参数的识别效果,分别针对大跨度柔
+性光伏支架结构的气弹试验数据和某高层建筑的实
+测加速度响应数据进行分析。
+3.1　大跨度柔性光伏支架
+以某跨度和高度分别为15.3m和3.6m的大跨
+度柔性光伏支架结构为研究对象,开展了缩尺气弹
+模型风洞试验。该原型结构包含2根施加有120kN
+预张力的钢拉索,拉索截面积为280mm2,弹性模量
+约为200GPa,其上平铺有7块标准光伏组件,每块组
+件尺寸为2000mm×1000mm×40mm,预应力拉索
+两端固定在两侧的4根刚性立柱上。气弹模型几何
+缩尺比选为1∶10,根据几何相似、Froude数相似以及弹性参数相似的要求进行设计,如图7所示。其中光
+伏板采用木材模拟,根据拉伸刚度相似原则,拉索采
+用高强钢丝模拟(弹性模量为206GPa),并对其施加
+120N的初始预张力。本次试验中采用了均匀湍流风
+场,风速约为10m/s,湍流度为10%。试验过程中利
+用激光位移计同步测得跨中和1/4跨度处的位移响
+应时程,采样频率为1500Hz,风向角15°下每测点采
+集50000个数据。
+图7　气弹试验模型构造及尺寸示意
+Fig.7　Sketchofconfigurationandgeometry
+dimensionsofaeroelasticmodel
+图8中给出了风向角15°下测点1、2的位移响
+应时程。采用谱分析法获得位移响应信号功率谱估
+计,如图9所示。由图9可知,测点1、2响应信号均
+有明显的3阶共振峰,其对应的前3阶频率近似为
+12、24Hz与39Hz,且在各阶频率附近出现明显的
+窄带。
+由于大跨柔性光伏结构刚度较小,在风荷载作
+用下产生的气动弹性效应会使得位移响应信号呈现
+非平稳特征。利用轮次检测法[26]对测点1、2的位移
+响应信号的平稳性进行辨识。在显著性水平α=
+0.05时,测点1、2位移响应信号的统计量|Z|值分别
+为5.91和8.33,均大于1.96,由此可知测点1、2的
+位移响应信号均表现出非平稳特征。
+为了考察上述响应信号产生的结构模态参数的
+时变特征,利用FBST方法识别得到大跨柔性光伏支
+架竖向前3阶模态随时间变化的频率和阻尼比,其
+中窗函数时间长度为2s,频率分辨率取为0.5Hz,时
+间分辨率为1s。同时,为了说明FBST方法与传统时
+变模态参数方法的差异,利用文献[22,27]中所提基
+于连续小波变换的非平稳信号识别方法(CWT方
+法)以及文献[28]中的经典的Hilbert-Huang变换
+(HHT)方法,对上述气弹模型的竖向前3阶模态频
+013图8　气弹试验模型位移响应时程
+Fig.8　Time-historyofdisplacementresponse
+ofaeroelasticmodel
+图9　气弹试验模型功率谱估计
+Fig.9　Estimationofpowerspectrumofaeroelasticmodel
+率和阻尼比进行识别。图10、11中给出了利用上述
+3种方法识别得到的结构阻尼比和频率随时间的变
+化。由图10、11可见,由于结构的非线性特征和气
+动敏感性,风振时结构的频率和阻尼具有时变特
+征。相比结构频率的识别结果,FBST方法识别得
+到的结构阻尼比存在较大的变异区间。这是由于
+图10　气弹试验模型频率识别结果
+Fig.10　Identifiedfrequencyofaeroelasticmodel
+受到环境噪声和解耦技术等的影响,使阻尼比识别
+更加复杂。
+经典的EMD-Hilbert方法[29](EMD方法)首先由
+经验模态分解法获得反映低阶频率的本征模函数,
+随后应用Hilbert变换对获得的信号自由衰减曲线进
+行处理从而识别信号的模态参数。该方法可以从整
+体上评价信号时程的频率和阻尼特性,但无法反映
+其时变特征。为了进一步比较不同方法识别结果的
+有效性,利用EMD方法识别出气弹模型的竖向前3
+阶阻尼比和频率,并与FBST方法、CWT方法和HHT
+方法的识别结果的均值进行对比,如表1所示,表中
+ f、 ζ为频率、阻尼比均值。由表1可见,3种方法识别
+出的频率均值结果较为一致,前三阶频率基本都在
+12.3、24.5Hz以及38.9Hz附近。而阻尼比均值结
+果略有差异,如不同方法识别得到的最小和最大1
+阶阻尼比分别为0.99和1.35,表明阻尼比识别的不
+确定性较大,这一点由表1中FBST方法阻尼识别结
+果具有较大的变异系数(超过20%)也可以说明。
+113图11　气弹试验模型阻尼比识别结果
+Fig.11　Identifieddampingratioofaeroelasticmodel
+表1　不同方法的模态参数识别结果对比(大跨支架)
+Table1　Comparisonofidentifiedmodalparameters
+betweendifferentmethods(large-spansupportstructure)
+方法
+类型 f/Hz  ζ/%
+1阶2阶3阶1阶2阶3阶
+EMD12.2624.5238.381.291.221.17
+FBST12.2724.8038.970.991.371.02
+(0.88%)(0.29%)(0.25%)(21.68%)(26.32%)(26.03%)
+CWT12.3824.4438.881.351.411.22
+HHT12.5524.5439.051.161.251.17
+注:括号中数值为FBST方法识别结果的变异系数均值。
+3.2　某高层建筑结构
+为进一步说明FBST方法对不同结构响应识别
+的有效性,分别利用FBST方法、CWT方法和HHT方
+法对台风作用下某高层建筑结构的模态参数进行识
+别。在该大楼顶层角部和中心设置加速度测点,测
+点布置和结构的具体参数见文献[30],该高层结构
+X向振动1阶频率约为0.205Hz,实测数据的采样频
+率为20Hz,采样时间为3000s。测得某次台风作用下结构X向实测加速度响应a时程,如图12所示。
+利用轮次检测法计算得到在显著性水平α=0.05
+时,角部测点和中心测点加速度响应信号的统计量
+|Z|值均为2.65,大于1.96。可见,该结构的X向加
+速度响应信号均表现出弱非平稳特征。
+图12　某高层建筑实测加速度响应时程
+Fig.12　Time-historyofmeasuredacceleration
+responseofahigh-risebuilding
+图13中给出了FBST方法、CWT方法和HHT方
+法识别得到的结构X向1阶频率和阻尼比随时间的
+变化结果,其中FBST方法中窗函数时间长度取为
+60s,频率分辨率为1/120Hz,时间分辨率为60s。由
+图13可见,台风作用下高层结构的频率和阻尼时变
+特征不显著,表明该大楼的风振加速度响应信号近
+似平稳过程。3种方法识别结果接近。表2中给出
+了EMD方法、FBST方法、CWT方法和HHT方法识
+别得到的该高层建筑的1阶模态参数均值的对比。
+由表2可知,不同方法识别出的该高层建筑结构的
+频率和阻尼比均值结果较为接近,分别在0.21和
+0.76附近。
+表2　不同方法的1阶模态参数识别结果对比(高层建筑)
+Table2　Comparisonofidentifiedmodalparameters
+betweendifferentmethods(high-risebuilding)
+方法类型  f/Hz  ζ/%
+EMD 0.21 0.77
+FBST 0.20(0.68%)0.77(16.20%)
+CWT 0.21 0.75
+HHT 0.21 0.74
+注:括号中数值为FBST方法识别结果的变异系数均值。
+213图13　某高层建筑X向频率和阻尼比识别结果
+Fig.13　Identificationresultsoffrequencyanddamping
+ratioinXdirectionforahigh-risebuilding
+　　通过分析两种不同工程结构动力特性参数的识
+别结果可知,前述FBST方法、CWT方法和HHT方法
+在时变频率识别上具有良好的相似性。对于非平稳
+的响应(如大跨柔性支架),3种方法的阻尼比识别结
+果变化范围相似,但数值有一定的差异;而对于近似
+平稳(或弱非平稳)的信号(如高层建筑),3种方法
+识别的阻尼值相差不大。但相比CWT方法和HHT
+方法,FBST方法可以给出识别结果的变异系数,即不
+确定性。
+4　结论
+1)提出了基于短时傅里叶变换的快速贝叶斯模
+态识别(FBST)方法。利用短时傅里叶变换得到的时
+频特性可以反映出在环境激励下模态参数的时域特
+征,同时引入时域分解(TDD)将多模态多自由度响
+应信号解耦为单自由度单模态响应信号,理论上简
+化了计算过程。
+2)采用基于短时傅里叶变换的快速贝叶斯模态
+参数识别方法,可以解决传统傅里叶变换无法反应
+结构时域信息的缺点。而相比传统的连续小波变换
+方法和Hilbert-Huang变换方法,FBST方法不仅可以
+获得模态参数最优估计值的时域特征,而且可以通
+过变异系数给出识别结果的不确定度。
+3)对高层建筑的弱非平稳风振加速度响应,连续小波变换方法、Hilbert-Huang变换方法以及FBST
+方法的识别结果较为一致,且识别出的频率和阻尼
+比的时变特性不显著。而对非平稳性较明显的大跨
+支架响应数据,连续小波变换方法、Hilbert-Huang变
+换方法以及FBST方法对时变频率的识别结果较为
+一致,但阻尼比的识别结果存在一定差异。FBST方
+法显示阻尼比识别结果变异系数较大。
+参　考　文　献
+[1]　YUENKV,KATAFYGIOTISLS.Bayesianfast
+Fouriertransformapproachformodalupdatingusing
+ambientdata[J].AdvancesinStructuralEngineering,
+2003,6(2):81-95.
+[2]　YUENKV,KATAFYGIOTISLS.Bayesiantime-
+domainapproachformodalupdatingusingambientdata
+[J].ProbabilisticEngineeringMechanics,2001,16
+(3):219-231.
+[3]　YUENKV,KATAFYGIOTISLS,BECKJL.Spectral
+densityestimationofstochasticvectorprocesses[J].
+ProbabilisticEngineeringMechanics,2002,17(3):
+265-272.
+[4]　YUENKV,KATAFYGIOTISLS.Bayesianmethods
+forstructuraldynamicsandcivilengineering[M].New
+York:JohnWiley&Sons,Ltd,2010.
+[5]　AUSK.FastBayesianFFTmethodforambientmodal
+identificationwithseparatedmodes[J].Journalof
+EngineeringMechanics,2011,137(3):214-226.
+[6]　AUSK.FastBayesianambientmodalidentificationin
+thefrequencydomain:partI:posteriormostprobable
+value[J].MechanicalSystemsandSignalProcessing,
+2012,26:60-75.
+[7]　AUSK.FastBayesianambientmodalidentificationin
+thefrequencydomain:partII:posterioruncertainty[J].
+MechanicalSystemsandSignalProcessing,2012,26:
+76-90.
+[8]　AUSK,ZHANGFL,NIYC.Bayesianoperational
+modalanalysis:theory,computation,practice[J].
+Computers&Structures,2013,126:3-14.
+[9]　NIYC,ZHANGFL.Uncertaintyquantificationinfast
+Bayesianmodalidentificationusingforcedvibrationdata
+consideringtheambienteffect[J].MechanicalSystems
+andSignalProcessing,2021,148:107078.
+[10]韩建平,郑沛娟.环境激励下基于快速贝叶斯FFT
+的实桥模态参数识别[J].工程力学,2014,31(4):
+119-125.(HANJianping,ZHENGPeijuan.Modal
+parameteridentificationofanactualbridgebyfast
+BayesianFFTmethodunderambientexcitation[J].
+EngineeringMechanics,2014,31(4):119-125.(in
+Chinese))
+[11]黄铭枫,吴承卉,徐卿,等.基于实测数据的某高层
+313建筑结构动力参数和气动阻尼识别[J].振动与冲
+击,2017,36(10):31-37.(HUANGMingfeng,WU
+Chenghui,XUQing,etal.Structuraldynamicand
+aerodynamicparametersidentificationforatallbuilding
+withfull-scalemeasurements[J].JournalofVibration
+andShock,2017,36(10):31-37.(inChinese))
+[12]黄鑫.随机子空间识别和贝叶斯模态分析方法的应
+用研究[D].杭州:浙江大学,2020.(HUANGXin.
+Researchonapplicationsofstochasticsubspace
+identificationandBayesianmodalanalysismethod[D].
+Hangzhou:ZhejiangUniversity,2020.(inChinese))
+[13]XIAQ,TIANYD,CAIDX,etal.Structural
+flexibilityidentificationandfast-Bayesian-based
+uncertaintyquantificationofacable-stayedbridge[J].
+EngineeringStructures,2020,214:110616.
+[14]NIYC,ALAMDARIMM,YEXW,etal.Fast
+operationalmodalanalysisofasingle-towercable-stayed
+bridgebyaBayesianmethod[J].Measurement,2021,
+174:109048.
+[15]吴杰,徐洪俊,张其林.模态识别的BayesianTDD-
+FFT法及其应用[J].振动与冲击,2019,38(15):
+142-148.(WUJie,XUHongjun,ZHANGQilin.
+BayesianTDD-FFTmethodformodalidentificationand
+itsapplication[J].JournalofVibrationandShock,
+2019,38(15):142-148.(inChinese))
+[16]徐洪俊,吴杰,张锦东,等.参数识别的改进
+BayesianTDD-FFT方法及其应用[J].建筑结构学
+报,2022,43(3):203-211.(XUHongjun,WUJie,
+ZHANGJindong,etal.ImprovedBayesianTDD-FFT
+methodforparameteridentificationanditsapplication
+[J].JournalofBuildingStructures,2022,43(3):
+203-211.(inChinese))
+[17]乌建中,陶益.基于短时傅里叶变换的风机叶片裂
+纹损伤检测[J].中国工程机械学报,2014,12(2):
+180-183.(WUJianzhong,TAOYi.STFT-basedcrack
+detectiononwindturbineblades[J].ChineseJournal
+ofConstructionMachinery,2014,12(2):180-183.(in
+Chinese))
+[18]胡振邦,许睦旬,姜歌东,等.基于小波降噪和短时
+傅里叶变换的主轴突加不平衡非平稳信号分析[J].
+振动与冲击,2014,33(5):20-23.(HUZhenbang,
+XUMuxun,JIANGGedong,etal.Analysisofnon-
+stationarysignalofasuddenunbalancedspindlebased
+onwaveletnoisereductionandshort-timeFourier
+transformation[J].JournalofVibrationandShock,
+2014,33(5):20-23.(inChinese))
+[19]陈学军,杨永明.基于经验小波变换的振动信号分
+析[J].太阳能学报,2017,38(2):339-346.(CHEN
+Xuejun,YANGYongming.Analysisofvibrationsignalsbasedonempiricalwavelettransform[J].Acta
+EnergiaeSolarisSinica,2017,38(2):339-346.(in
+Chinese))
+[20]王超,朱宏平,艾德米.基于同步挤压小波变换的结
+构时变参数识别[J].华中科技大学学报(自然科学
+版),2017,45(11):46-50.(WANGChao,ZHU
+Hongping,AIDemi.Structuraltime-varyingparameter
+identificationbasedonsynchrosqueezedwavelet
+transform[J].JournalofHuazhongUniversityof
+ScienceandTechnology(NaturalScienceEdition),
+2017,45(11):46-50.(inChinese))
+[21]王立岩,李东升,李宏男.基于HHT的非线性振动
+系统参数识别研究[J].工程力学,2017,34(1):
+28-32.(WANGLiyan,LIDongsheng,LIHongnan.
+Parameteridentificationofnonlinearvibrationsystems
+basedontheHilbert-Huangtransform[J].Engineering
+Mechanics,2017,34(1):28-32.(inChinese))
+[22]程正国.建筑结构模态参数的时频分析研究[D].
+武汉:武汉理工大学,2020:10-22.(CHENG
+Zhengguo.Studyonmodalparametersofbuilding
+structurebytimetime-frequencyanalysis[D].Wuhan:
+WuhanUniversityofTechnology,2020:10-22.(in
+Chinese))
+[23]钟军军,董聪.环境激励下识别结构模态自然激励-
+时域分解法[J].振动与冲击,2013,32(18):121-
+125.(ZHONGJunjun,DONGCong.Naturalexcitation
+technique-timedomaindecompositionalgorithmfor
+structuralmodalidentificationunderambientexcitations
+[J].JournalofVibrationandShock,2013,32(18):
+121-125.(inChinese))
+[24]边海龙.非平稳信号联合时频分析方法的若干问题
+研究与应用[D].成都:电子科技大学,2008:22-27.
+(BIANHailong.Theresearchofsomeproblemsin
+nonstationarysignalstime-frequencyjointanalysis
+methodsandapplication[D].Chengdu:Universityof
+ElectronicScienceandTechnologyofChina,2008:22-
+27.(inChinese))
+[25]唐向宏,李齐良.时频分析与小波变换[M].北京:
+科学出版社,2008:60-78.(TANGXianghong,LI
+Qiliang.Time-frequencyanalysisandwavelettransform
+[M].Beijing:SciencePress,2008:60-78.(inChinese))
+[26]时浩博.基于环境激励的大跨悬索桥自振特性及气
+动阻尼识别[D].重庆:重庆交通大学,2020:50-77.
+(SHIHaobo.Identificationofnaturalvibrationand
+aerodynamicdampingoflong-spansuspensionbridge
+basedonambientexcitation[D].Chongqing:
+ChongqingJiaotongUniversity,2020:50-77.(in
+Chinese))
+(下转第334页)
+413[26]ZAIMISI,GIANNAKISE,SAVAIDISG.Generative
+designcasestudyofaCNCmachinednoselandinggear
+foranunmannedaerialvehicle[J].IOPConference
+Series:MaterialsScienceandEngineering,2021,1024
+(1):012064.
+[27]NAH,KIMW.Astudyonthepracticaluseof
+generativedesignintheproductdesignprocess[J].
+ArchivesofDesignResearch,2021,34(1):85-99.
+[28]KHANS,GUNPINARE,SENERB.GenYacht:an
+interactivegenerativedesignsystemforcomputer-aided
+yachthulldesign[J].OceanEngineering,2019,191:
+106462.
+[29]OHS,JUNGY,KIMS,etal.Deepgenerative
+design:integrationoftopologyoptimizationand
+generativemodels[J].JournalofMechanicalDesign,
+2019,141(11):1.4044229.
+[30]MAKSIMOVA,PETROFFR,KLYAVINO,etal.On
+theproblemofoptimizingthedoorhingeofelectrocar
+bygenerativedesignmethods[J].InternationalJournal
+ofMechanics,2020,14:119-124.[31]牟唯嫣,王春玲,赵昕.基于空间填充准则的交叉验
+证方法及其应用[J].系统科学与数学,2020,40(2):
+382-388.(MUWeiyan,WANGChunling,ZHAOXin.
+Aspacefilling-basedcross-validationmethodandits
+applications[J].JournalofSystemsScienceand
+MathematicalSciences,2020,40(2):382-388.(in
+Chinese))
+[32]KHANS,AWANMJ.Agenerativedesigntechnique
+forexploringshapevariations[J].Advanced
+EngineeringInformatics,2018,38:712-724.
+[33]DUWF,SUNY,YANGMJ.Bearingcapacityofthe
+cast-steeljointwithbranchesundereccentricload[J].
+JournalofConstructionalSteelResearch,2017,135:
+285-291.
+[34]赵阳,陈敏超,王震.面向增材制造的索杆结构节点
+拓扑优化设计[J].建筑结构学报,2019,40(3):
+58-68.(ZHAOYang,CHENMinchao,WANGZhen.
+Additivemanufacturingorientedtopologyoptimizationof
+nodesincable-strutstructures[J].JournalofBuilding
+Structures,2019,40(3):58-68.(inChinese))
+(上接第314页)
+[27]许畅.时频联合分析及其在非平稳振动信号处理中
+的应用[D].哈尔滨:哈尔滨工业大学,2016:37-50.
+(XUChang.Jointtimefrequencyanalysisandtheir
+applicationsonnonstationaryvibrationprocessing[D].
+Harbin:HarbinInstituteofTechnology,2016:37-50.
+(inChinese))
+[28]王学敏.基于Hilbert-Huang变换的桥梁监测信号分
+析与处理和时变模态参数识别[D].长沙:中南大
+学,2008:42-70.(WANGXuemin.Monitoringsignal
+analysisandprocessingforbridgesandtime-varying
+modalparameteridentificationbasedonHilbert-Huangtransform[D].Changsha:CentralSouthUniversity,
+2008:42-70.(inChinese))
+[29]孙旭峰,董石麟.索穹顶结构的气动阻尼识别[J].
+空气动力学学报,2009,27(2):206-209.(SUN
+Xufeng,DONGShilin.Identificationofaerodynamic
+dampingofthecabledome[J].ActaAerodynamica
+Sinica,2009,27(2):206-209.(inChinese))
+[30]HUANGM,XUQ,XUH,etal.Probabilistic
+assessmentofvibrationexceedanceforafull-scaletall
+buildingundertyphoonconditions[J].TheStructural
+DesignofTallandSpecialBuildings,2018,27(15):e1516.
+433
