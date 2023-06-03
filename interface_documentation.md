@@ -563,4 +563,157 @@ Content-Type: application/json
 }
 ```
 
+# 11.发送消息
 
+- 该接口用于记录发送的信息。
+
+请求URL：/api/scholarsphere/user/sendinfo
+
+请求方式：POST
+
+请求参数：
+
+| 参数名    | 必选 | 类型   | 说明     |
+| --------- | ---- | ------ | -------- |
+| sender_email     | 是   | string | 发送者邮箱 |
+| receiver_email     | 是   | string | 接收者邮箱 |
+| info     | 是   | string | 发送的信息 |
+
+成功：
+
+```json
+{
+    "result": 1,
+    "message": "发送成功!"
+}
+```
+
+
+失败：
+
+```json
+{
+    "result": 0,
+    "message": "请求方式错误!"
+}
+```
+
+
+# 12.查询历史信息
+- 该接口用于查询历史已读信息。
+
+请求URL：/api/scholarsphere/user/historyinfo
+
+请求方式：POST
+
+请求参数：
+
+| 参数名    | 必选 | 类型   | 说明     |
+| --------- | ---- | ------ | -------- |
+| user1_email    | 是   | string | 用户1邮箱 |
+| user2_email     | 是   | string | 用户2邮箱 |
+
+成功：
+
+```
+HTTP/1.1 200 OK
+Content-Type: application/json
+{
+    'results': [
+        {
+            'use1_email' : miy1,
+            'use2_email' : miy2,
+            'info' : 123456jm,
+            'time' : 2023-06-03 11:41:31
+        }
+    ]
+}
+```
+
+失败：
+
+```json
+{
+    "result": 0,
+    "message": "请求方式错误!"
+}
+```
+
+# 13.判断是否有新消息
+
+请求URL：/api/scholarsphere/user/checknewinfo
+
+请求方式：POST
+
+请求参数：
+
+| 参数名    | 必选 | 类型   | 说明     |
+| --------- | ---- | ------ | -------- |
+| user1_email   | 是   | string | 用户邮箱 |
+
+
+成功：
+
+```
+HTTP/1.1 200 OK
+Content-Type: application/json
+{
+    'results': [
+        {
+            'new_from' : miy2
+        }
+    ]
+}
+```
+
+失败：
+
+```
+HTTP/1.1 200 OK
+Content-Type: application/json
+{
+    'results': [
+        {
+            'new_from' : NULL
+        }
+    ]
+}
+```
+
+# 14.获取未读消息
+
+请求URL：/api/scholarsphere/user/userreadinfo
+
+请求方式：POST
+
+请求参数：
+
+| 参数名    | 必选 | 类型   | 说明     |
+| --------- | ---- | ------ | -------- |
+| user1_email   | 是   | string | 用户邮箱 |
+| user2_email     | 是   | string | 用户2邮箱 |
+
+成功：
+
+```
+HTTP/1.1 200 OK
+Content-Type: application/json
+{
+    'results': [
+        {
+            ''use1_email': miy1,
+            'use2_email': miy2,
+            'info': 123456jm,
+            'time': 2023-06-03 11:41:31
+        }
+    ]
+}
+```
+
+失败：
+```json
+{
+    "result": 0,
+    "message": "无新消息!"
+}
+```
