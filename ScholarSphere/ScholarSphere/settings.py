@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'user',
     'search',
-    'article'
+    'article',
+    'chat'
 ]
 
 MIDDLEWARE = [
@@ -106,7 +107,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
+STATIC_URL = '/static/'
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
