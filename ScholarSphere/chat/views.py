@@ -96,6 +96,30 @@ def user_read_info(request):
             result.save()
 
         return JsonResponse(response_data)
+
     else:
         result = {'result': 0, 'message': r"无新信息"}
+        return JsonResponse(result)
+
+@csrf_exempt
+def user_all_info(request):
+    user1_email = request.POST.get('user1_email')
+    user1 = User.objects.filter(email=user1_email).first()
+    results1 = ChatInfo.objects.filter(receiver=user1)
+    results2 = ChatInfo.objects.filter(sender=user1)
+    results3 = results2.union(results1)
+    if results3.exists():
+        response_data = {
+            'results': [
+                {
+                    'use1_email': result.sender.email,
+                    'use2_email': result.receiver.email,
+                    'info': result.information,
+                    'time': result.sendTime
+                } for result in results3
+            ]
+        }
+        return JsonResponse(response_data)
+    else:
+        result = {'result': 0, 'message': r"无信息"}
         return JsonResponse(result)

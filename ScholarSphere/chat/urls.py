@@ -6,4 +6,5 @@ urlpatterns = [
     path('chat/historyinfo',history_info),
     path('chat/checknewinfo',check_new_info),
     path('chat/userreadinfo',user_read_info),
+    path('chat/userallinfo',user_all_info),
 ]

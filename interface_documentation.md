@@ -864,3 +864,42 @@ jsonCopy code{
     "error": "Invalid method"
 }
 ```
+
+# 18 用户所有信息
+
+请求URL： `/api/scholarsphere/chat/userallinfo`
+
+请求方式：POST
+
+请求参数：
+
+| 参数名  | 必选 | 类型   | 说明    |
+| ------- | ---- | ------ | ------- |
+| user1_email | 是   | string | 用户 邮箱 |
+
+返回示例：
+
+成功：
+
+```
+HTTP/1.1 200 OK
+Content-Type: application/json
+{
+    'results': [
+        {
+            ''use1_email': miy1,
+            'use2_email': miy2,
+            'info': 123456jm,
+            'time': 2023-06-03 11:41:31
+        }
+    ]
+}
+```
+
+失败：
+```json
+{
+    "result": 0,
+    "message": "无消息!"
+}
+```
